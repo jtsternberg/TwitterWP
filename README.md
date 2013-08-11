@@ -12,7 +12,8 @@ A tool for connecting to the twitter 1.1 API (via WordPress http API) using your
  */
 add_action( 'all_admin_notices', 'twitterwp_example_test' );
 function twitterwp_example_test() {
-  // app credentials
+	// app credentials
+	// (must be in this order)
 	$app = array(
 		'consumer_key'        => 'YOUR CONSUMER KEY';
 		'consumer_secret'     => 'YOUR CONSUMER SECRET';
@@ -29,5 +30,4 @@ function twitterwp_example_test() {
 </div>
 <?php
 
-}
-```
+}```
