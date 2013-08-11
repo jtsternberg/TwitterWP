@@ -9,15 +9,15 @@
 
 class TwitterWP {
 
-	/**
-	 * Get Twitter app credentials at https://dev.twitter.com
-	 */
-	private   $app           = array();
 	protected $error_message = 'Could not access Twitter feed.';
 	protected $url           = 'https://api.twitter.com/1.1/';
 	protected $user;
 	// A single instance of this class.
 	private static $instance = null;
+	/**
+	 * Get Twitter app credentials at https://dev.twitter.com
+	 */
+	private static $app      = array();
 
 	/**
 	 * Creates or returns an instance of this class.
@@ -26,17 +26,27 @@ class TwitterWP {
 	 */
 	public static function start( $app = array() ) {
 
+		if ( null == self::$instance ) {
+			$check = new self( $app );
+			if ( $check !== true )
+				return $check;
+
+			self::$instance = $check;
+		}
+
+		return self::$instance;
+	}
+
+	private function __construct( $app = array() ) {
 		if ( empty( self::$app ) ) {
 
-			if ( $error = $this->app_setup_error( $app ) )
-				return $error;
+			$app = self::app_setup_error( $app, true );
+			if ( is_wp_error( $app ) )
+				return $app;
 
 			self::$app = array_values( $app );
 		}
-
-		self::$instance = null == self::$instance ? new self : self::$instance;
-
-		return self::$instance;
+		return true;
 	}
 
 	/**
@@ -47,7 +57,7 @@ class TwitterWP {
 	}
 
 	public function get_tweets( $user = '', $count = 1 ) {
-		if ( $error = $this->app_setup_error() )
+		if ( $error = self::app_setup_error() )
 			return $error;
 
 		$this->user = $user;
@@ -62,7 +72,7 @@ class TwitterWP {
 	}
 
 	public function authenticate_user( $user = '' ) {
-		if ( $error = $this->app_setup_error() )
+		if ( $error = self::app_setup_error() )
 			return $error;
 
 		$this->user = $user;
@@ -86,9 +96,14 @@ class TwitterWP {
 
 			$errors = new WP_Error( 'twitterwp_error', $error_message ? $error_message : $this->error_message );
 
+			$addictional_info = '';
+			if ( isset( $response['response']['message'] ) ) {
+				$code = isset( $response['response']['code'] ) ? $response['response']['code'] .': ' : '';
+				$addictional_info = ' ('. $code . $response['response']['message'] .')';
+			}
 			foreach ( $json->errors as $key => $error ) {
 
-				$errors->add( 'twitterwp_error', '<strong>ERROR '. $error->code .':</strong> '. $error->message );
+				$errors->add( 'twitterwp_error', '<strong>ERROR '. $error->code .':</strong> '. $error->message . $addictional_info );
 			}
 			return $errors;
 		}
@@ -180,17 +195,32 @@ class TwitterWP {
 		return $this->api_url( array( 'screen_name' => $this->user ), 'users/lookup.json' );
 	}
 
-	protected function app_setup_error( $app = array() ) {
-		if ( $this->app_creds( !empty( $app ) ? $app : self::$app )
-			return false;
+	public static function app_setup_error( $app = array(), $return = false ) {
+		$app = !empty( $app ) ? $app : self::$app;
+		if ( $to_return = self::app_creds( $app ) )
+			return $return ? $to_return : false;
 
-		return '<strong>ERROR:</strong> Missing Twitter App credentials.';
+		return new WP_Error( 'ERROR', __( 'Missing Twitter App credentials.' ) );
 	}
 
-	protected function app_creds( $app ) {
-		$app = array_filter( (array) $app );
-		if ( empty( $app ) || !is_array( $app ) || count( $app ) !== 4 )
+	public static function app_creds( $app ) {
+
+		if ( is_array( $app ) )
+			$app_arr =& $app;
+		else
+			wp_parse_str( $app, $app_arr );
+
+		$app_arr = array_filter( (array) $app_arr );
+		if ( empty( $app_arr ) || !is_array( $app_arr ) || count( $app_arr ) !== 4 )
 			return false;
-		return $app;
+
+		return $app_arr;
+	}
+
+	/**
+	 * @DEV
+	 */
+	public static function app() {
+		return self::$app;
 	}
 }
