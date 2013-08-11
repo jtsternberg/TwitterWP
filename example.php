@@ -1,5 +1,8 @@
 <?php
 
+if ( ! class_exists( 'TwitterWP' ) )
+	require_once( 'lib/TwitterWP.php' );
+
 /**
  * Example TwitterWP usage
  */

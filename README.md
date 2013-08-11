@@ -7,6 +7,9 @@ A tool for connecting to the twitter 1.1 API (via WordPress http API) using your
 ```php
 <?php
 
+if ( ! class_exists( 'TwitterWP' ) )
+	require_once( 'lib/TwitterWP.php' );
+
 /**
  * Example TwitterWP usage
  */
