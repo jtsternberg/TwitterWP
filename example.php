@@ -6,6 +6,7 @@
 add_action( 'all_admin_notices', 'twitterwp_example_test' );
 function twitterwp_example_test() {
 	// app credentials
+	// (must be in this order)
 	$app = array(
 		'consumer_key'        => 'YOUR CONSUMER KEY';
 		'consumer_secret'     => 'YOUR CONSUMER SECRET';
