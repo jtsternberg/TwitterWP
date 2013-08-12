@@ -30,22 +30,20 @@ function twitterwp_example_test() {
 	// bail here if the user doesn't exist
 	if ( ! $tw->user_exists( $user ) )
 		return;
-?>
-<div id="message" class="updated">
-	<pre><?php print_r( $tw->get_tweets( 'jtsternberg', 5 ) ); ?></pre>
-</div>
-<?php
+
+	echo '<div id="message" class="updated">';
+	echo '<pre>'. print_r( $tw->get_tweets( 'jtsternberg', 5 ), true ) .'</pre>';
+	echo '</div>';
 
 	// Now let's check our app's rate limit status
 	$rate_status = $tw->rate_limit_status();
-?>
-<div id="message" class="updated">
-	<?php if ( is_wp_error( $rate_status ) ) :
+	echo '<div id="message" class="updated">';
+
+	if ( is_wp_error( $rate_status ) )
 		$tw->show_wp_error( $rate_status );
-	else; ?>
-		<pre><?php print_r( $rate_status ); ?></pre>
-	<?php endif; ?>
-</div>
-<?php
+	else
+		echo '<pre>'. print_r( $rate_status, true ) .'</pre>';
+
+	echo '</div>';
 
 }```
