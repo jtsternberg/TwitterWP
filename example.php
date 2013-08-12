@@ -19,6 +19,9 @@ function twitterwp_example_test() {
 	// initiate your app
 	$tw = TwitterWP::start( $app );
 
+	// Also works:
+	// $tw = TwitterWP::start( '0=CONSUMER_KEY&1=CONSUMER_SECRET&2=ACCESS_TOKEN&3=ACCESS_TOKEN_SECRET' );
+
 	$user = 'jtsternberg';
 	// bail here if the user doesn't exist
 	if ( ! $tw->user_exists( $user ) )
