@@ -25,11 +25,26 @@ function twitterwp_example_test() {
 	);
 	// initiate your app
 	$tw = TwitterWP::start( $app );
+
+	$user = 'jtsternberg';
+	// bail here if the user doesn't exist
+	if ( ! $tw->user_exists( $user ) )
+		return;
 ?>
 <div id="message" class="updated">
-	<p><?php $tw->hello(); ?></p>
-	<pre><?php print_r( $tw->authenticate_user( 'jtsternberg' ) ); ?></pre>
 	<pre><?php print_r( $tw->get_tweets( 'jtsternberg', 5 ) ); ?></pre>
+</div>
+<?php
+
+	// Now let's check our app's rate limit status
+	$rate_status = $tw->rate_limit_status();
+?>
+<div id="message" class="updated">
+	<?php if ( is_wp_error( $rate_status ) ) :
+		$tw->show_wp_error( $rate_status );
+	else; ?>
+		<pre><?php print_r( $rate_status ); ?></pre>
+	<?php endif; ?>
 </div>
 <?php
 
