@@ -24,10 +24,10 @@ function twitterwp_example_test() {
 	// app credentials
 	// (must be in this order)
 	$app = array(
-		'consumer_key'        => 'YOUR CONSUMER KEY';
-		'consumer_secret'     => 'YOUR CONSUMER SECRET';
-		'access_token'        => 'YOUR ACCESS TOKEN';
-		'access_token_secret' => 'YOUR ACCESS TOKEN SECRET';
+		'consumer_key'        => 'YOUR CONSUMER KEY',
+		'consumer_secret'     => 'YOUR CONSUMER SECRET',
+		'access_token'        => 'YOUR ACCESS TOKEN',
+		'access_token_secret' => 'YOUR ACCESS TOKEN SECRET',
 	);
 	// initiate your app
 	$tw = TwitterWP::start( $app );
