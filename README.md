@@ -41,7 +41,7 @@ function twitterwp_example_test() {
 		return;
 
 	echo '<div id="message" class="updated">';
-	echo '<pre>'. print_r( $tw->get_tweets( 'jtsternberg', 5 ), true ) .'</pre>';
+	echo '<pre>'. print_r( $tw->get_tweets( $user, 5 ), true ) .'</pre>';
 	echo '</div>';
 
 	// Now let's check our app's rate limit status
