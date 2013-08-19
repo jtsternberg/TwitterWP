@@ -64,7 +64,7 @@ class TwitterWP {
 
 		self::$user = $user ? $user : self::$user;
 
-		$response = wp_remote_get( 'http://twitter.com/'. urlencode( self::$user ) );
+		$response = wp_remote_get( 'http://twitter.com/'. urlencode( self::$user ), array( 'sslverify' => false ) );
 
 		if ( is_wp_error( $response ) || ! isset( $response['response']['code'] ) || $response['response']['code'] != 200 )
 			return false;
