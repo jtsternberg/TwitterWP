@@ -99,9 +99,9 @@ class TwitterWP {
 	/**
 	 * Get a number of search tweets
 	 * @since  1.0.1
-	 * @param  string  $search   String or array to search
-	 * @param  integer $count    Number of tweets to return
-	 * @return response|wp_error Response or wp_error object
+	 * @param  string|array $search Search query, can be string or array
+	 * @param  integer $count       Number of tweets to return
+	 * @return response|wp_error    Response or wp_error object
 	 */
 	public function get_search_results( $search, $count = 100 ) {
 		if ( $error = self::app_setup_error() )
