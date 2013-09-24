@@ -394,9 +394,9 @@ class TwitterWP {
 	/**
 	 * Request url for tweets search
 	 * @since  1.0.1
-	 * @param  string  $search Hashtag to search for
-	 * @param  integer $count  Number of tweets to return
-	 * @return string          Endpoint url for request
+	 * @param  string|array $search Search query, can be string or array
+	 * @param  integer      $count  Number of tweets to return
+	 * @return string               Endpoint url for request
 	 */
 	protected function search_url( $search, $count = 100 ) {
 		$this->base_url = $this->api_url();
