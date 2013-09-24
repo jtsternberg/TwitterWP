@@ -4,7 +4,7 @@
  *
  * @author  Justin Sternberg <justin@dsgnwrks.pro>
  * @package TwitterWP
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 class TwitterWP {
@@ -12,6 +12,8 @@ class TwitterWP {
 	protected $error_message     = 'Could not access Twitter feed.';
 	protected $url               = 'https://api.twitter.com/1.1/';
 	public  static $user         = false;
+	public  static $result_type  = 'mixed';
+
 	private static $bearer_token = false;
 	// A single instance of this class.
 	private static $instance     = null;
@@ -87,6 +89,26 @@ class TwitterWP {
 
 		$args = apply_filters( 'twitterwp_get_tweets', $this->header_args( '', array( 'count' => $count ) ) );
 		$response = wp_remote_get( $this->tweets_url( $count ), $args );
+
+		if( is_wp_error( $response ) )
+		   return '<strong>ERROR:</strong> '. $response->get_error_message();
+
+		return $this->return_data( $response, $error );
+	}
+
+	/**
+	 * Get a number of search tweets
+	 * @since  1.0.1
+	 * @param  string  $search   String or array to search
+	 * @param  integer $count    Number of tweets to return
+	 * @return response|wp_error Response or wp_error object
+	 */
+	public function get_search_results( $search, $count = 100 ) {
+		if ( $error = self::app_setup_error() )
+			return $error;
+
+		$args = apply_filters( 'twitterwp_get_search_results', $this->header_args( '', array( 'count' => $count ) ) );
+		$response = wp_remote_get( $this->search_url( $search, $count ), $args );
 
 		if( is_wp_error( $response ) )
 		   return '<strong>ERROR:</strong> '. $response->get_error_message();
@@ -367,6 +389,36 @@ class TwitterWP {
 	protected function tweets_url( $count = 1 ) {
 		$this->base_url = $this->api_url();
 		return $this->api_url( array( 'screen_name' => self::$user, 'count' => $count ) );
+	}
+
+	/**
+	 * Request url for tweets search
+	 * @since  1.0.1
+	 * @param  string  $search Hashtag to search for
+	 * @param  integer $count  Number of tweets to return
+	 * @return string          Endpoint url for request
+	 */
+	protected function search_url( $search, $count = 100 ) {
+		$this->base_url = $this->api_url();
+		$tags_array = array();
+		if ( is_array( $search ) ) {
+			foreach ( $search as $term ) {
+				$tags_array[] = trim( $term );
+			}
+			$query = urlencode( implode( ' ', $tags_array ) );
+		} elseif ( is_string( $search ) ) {
+			$query = urlencode( $search );
+		} else {
+			return false;
+		}
+
+		$search_params = apply_filters( 'twitterwp_search_params', array(
+			'q'           => $query,
+			'result_type' => self::$result_type,
+			'count'       => absint( $count ),
+		) );
+
+		return $this->api_url( $search_params, 'search/tweets.json' );
 	}
 
 	/**
