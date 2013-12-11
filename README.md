@@ -9,6 +9,60 @@ The only thing that matters is that this array is in this order, the keys can be
 
 I tried to purposely leave the names of these values out of the source code so that your app's credentials are somewhat secured through obscurity. I preferred this since my plugin that depends on this library will be distributed.
 
+#### To initate TwitterWP:
+```php
+$app = array(
+	'consumer_key'        => 'YOUR CONSUMER KEY',
+	'consumer_secret'     => 'YOUR CONSUMER SECRET',
+	'access_token'        => 'YOUR ACCESS TOKEN',
+	'access_token_secret' => 'YOUR ACCESS TOKEN SECRET',
+);
+// initiate your app
+$TwitterWP = TwitterWP::start( $app );
+```
+
+#### Available methods:
+
+* Check if a user exits
+	```php
+	$TwitterWP->user_exists( $user = '' );
+	```
+
+* Get a number of a user's tweets
+	```php
+	$TwitterWP->get_tweets( $user = '', $count = 1 );
+	```
+
+* Get a number of search term tweets
+	```php
+	$TwitterWP->get_search_results( $search, $count = 100 );
+	```
+
+* Get a number of tweets from a user's list
+	```php
+	$TwitterWP->get_list_tweets( $user = '', $count = 1 );
+	```
+
+* Access the user profile endpoint
+	```php
+	$TwitterWP->get_user( $user = '' );
+	```
+
+* Check your apps rate limit status
+	```php
+	$TwitterWP->rate_limit_status( $params = array() );
+	```
+
+* A generic helper for querying twitter via the bearer token.
+	```php
+	$TwitterWP->token_endpoint( $trail, $params = array() );
+	```
+
+* Returns your twitter app credentials (if they exist)
+	```php
+	$TwitterWP->get_app_creds();
+	```
+
 #### From example.php:
 ```php
 <?php
@@ -57,3 +111,17 @@ function twitterwp_example_test() {
 
 }
 ```
+
+#### Changelog
+
+* 1.0.2
+	* get_app_creds() Returns the credentials being used for TwitterWP
+	* get_list_tweets() Get a number of tweets from a list
+	* list_tweets_url() Request url for retrieving a user's list tweets
+
+* 1.0.1
+	* get_search_results() Get a number of search tweets
+	* search_url() Request url for tweets search
+
+* 1.0.0
+	* Hello World!

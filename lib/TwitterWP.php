@@ -4,7 +4,7 @@
  *
  * @author  Justin Sternberg <justin@dsgnwrks.pro>
  * @package TwitterWP
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 class TwitterWP {
@@ -109,6 +109,29 @@ class TwitterWP {
 
 		$args = apply_filters( 'twitterwp_get_search_results', $this->header_args( '', array( 'count' => $count ) ) );
 		$response = wp_remote_get( $this->search_url( $search, $count ), $args );
+
+		if( is_wp_error( $response ) )
+		   return '<strong>ERROR:</strong> '. $response->get_error_message();
+
+		return $this->return_data( $response, $error );
+	}
+
+	/**
+	 * Get a number of tweets from a list
+	 * @since  1.0.2
+	 * @param  string  $user     Twitter username
+	 * @param  string  $list     Search query, can be string or array
+	 * @param  integer $count    Number of tweets to return
+	 * @return response|wp_error Response or wp_error object
+	 */
+	public function get_list_tweets( $user, $list, $count = 100 ) {
+		if ( $error = self::app_setup_error() )
+			return $error;
+
+		self::$user = $user ? $user : self::$user;
+
+		$args = apply_filters( 'twitterwp_get_list_tweets', $this->header_args( '', array( 'count' => $count ) ) );
+		$response = wp_remote_get( $this->list_tweets_url( $list, $count ), $args );
 
 		if( is_wp_error( $response ) )
 		   return '<strong>ERROR:</strong> '. $response->get_error_message();
@@ -392,6 +415,17 @@ class TwitterWP {
 	}
 
 	/**
+	 * Request url for retrieving a user's list tweets
+	 * @since  1.0.0
+	 * @param  integer $count Number of tweets to return
+	 * @return string         Endpoint url for request
+	 */
+	protected function list_tweets_url( $list, $count = 1 ) {
+		$this->base_url = $this->api_url();
+		return $this->api_url( array( 'slug' => $list, 'owner_screen_name' => self::$user, 'count' => $count ), 'lists/statuses.json' );
+	}
+
+	/**
 	 * Request url for tweets search
 	 * @since  1.0.1
 	 * @param  string|array $search Search query, can be string or array
@@ -496,6 +530,15 @@ class TwitterWP {
 			return false;
 
 		return $app_arr;
+	}
+
+	/**
+	 * Returns the credentials being used for TwitterWP
+	 * @since  1.0.2
+	 * @return array App credentials (or empty) array
+	 */
+	public function get_app_creds() {
+		return self::$app;
 	}
 
 	/**
