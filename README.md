@@ -40,7 +40,7 @@ $TwitterWP = TwitterWP::start( $app );
 
 * Get a number of tweets from a user's list
 	```php
-	$TwitterWP->get_list_tweets( $user = '', $count = 1 );
+	$TwitterWP->get_list_tweets( $user = '', $list = '', $count = 1 );
 	```
 
 * Access the user profile endpoint
