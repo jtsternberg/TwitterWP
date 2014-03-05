@@ -457,15 +457,6 @@ class TwitterWP {
 		return $this->api_url( array( 'screen_name' => self::$user, 'count' => $count ), 'favorites/list.json' );
 	}
 
-	public function api_url( $params = array(), $trail = 'statuses/user_timeline.json' ) {
-
-		// append trailing path
-		$this->base_url = $this->url . $trail;
-		// append query args
-		return !empty( $params ) ? add_query_arg( $params, $this->base_url ) : $this->base_url;
-	}
-
-
 	/**
 	 * Request url for tweets search
 	 * @since  1.0.1
