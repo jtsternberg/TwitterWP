@@ -140,6 +140,28 @@ class TwitterWP {
 	}
 
 	/**
+	 * Get a number of user's favorite tweets
+	 * @since  1.0.3
+	 * @param  string  $user     Twitter username
+	 * @param  integer $count    Number of tweets to return
+	 * @return response|wp_error Response or wp_error object
+	 */
+	public function get_favorite_tweets( $user = '', $count = 1 ) {
+		if ( $error = self::app_setup_error() )
+			return $error;
+
+		self::$user = $user ? $user : self::$user;
+
+		$args = apply_filters( 'twitterwp_get_favorite_tweets', $this->header_args( '', array( 'count' => $count ) ) );
+		$response = wp_remote_get( $this->favorites_url( $count ), $args );
+
+		if( is_wp_error( $response ) )
+		   return '<strong>ERROR:</strong> '. $response->get_error_message();
+
+		return $this->return_data( $response, $error );
+	}
+
+	/**
 	 * Access the user profile endpoint
 	 * @since  1.0.0
 	 * @param  string  $user     Twitter username
@@ -424,6 +446,25 @@ class TwitterWP {
 		$this->base_url = $this->api_url();
 		return $this->api_url( array( 'slug' => $list, 'owner_screen_name' => self::$user, 'count' => $count ), 'lists/statuses.json' );
 	}
+
+	/**
+	 * Request url for retrieving a user's favorite tweets
+	 * @since  1.0.3
+	 * @param  integer $count Number of tweets to return
+	 */
+	protected function favorites_url( $count = 1 ) {
+		$this->base_url = $this->api_url();
+		return $this->api_url( array( 'screen_name' => self::$user, 'count' => $count ), 'favorites/list.json' );
+	}
+
+	public function api_url( $params = array(), $trail = 'statuses/user_timeline.json' ) {
+
+		// append trailing path
+		$this->base_url = $this->url . $trail;
+		// append query args
+		return !empty( $params ) ? add_query_arg( $params, $this->base_url ) : $this->base_url;
+	}
+
 
 	/**
 	 * Request url for tweets search
