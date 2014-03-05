@@ -43,6 +43,11 @@ $TwitterWP = TwitterWP::start( $app );
 	$TwitterWP->get_list_tweets( $user = '', $list = '', $count = 1 );
 	```
 
+* Get a number of tweets from a user's favorites
+	```php
+	$TwitterWP->get_favorite_tweets( $user = '', $count = 1 );
+	```
+
 * Access the user profile endpoint
 	```php
 	$TwitterWP->get_user( $user = '' );
@@ -113,6 +118,10 @@ function twitterwp_example_test() {
 ```
 
 #### Changelog
+
+* 1.0.3
+	* get_favorite_tweets() Get a number of a user's favorite tweets
+	* favorites_url() Request url for retrieving a user's favorite tweets
 
 * 1.0.2
 	* get_app_creds() Returns the credentials being used for TwitterWP

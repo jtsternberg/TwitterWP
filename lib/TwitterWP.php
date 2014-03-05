@@ -4,7 +4,7 @@
  *
  * @author  Justin Sternberg <justin@dsgnwrks.pro>
  * @package TwitterWP
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 class TwitterWP {
