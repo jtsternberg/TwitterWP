@@ -123,6 +123,7 @@ function twitterwp_example_test() {
 	* added filters for every url: tweets_url(), list_tweets_url(), favorites_url(), user_url()
 	* added consistent filter for search_url()
 	* fixed get_user() filter for header args
+	* updated inline documentation
 
 * 1.0.3
 	* get_favorite_tweets() Get a number of a user's favorite tweets
