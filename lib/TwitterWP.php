@@ -4,7 +4,7 @@
  *
  * @author  Justin Sternberg <justin@dsgnwrks.pro>
  * @package TwitterWP
- * @version 1.0.3
+ * @version 1.1.0
  */
 
 class TwitterWP {
@@ -176,7 +176,8 @@ class TwitterWP {
 		if ( !self::$user )
 			return new WP_Error( 'twitterwp_error', __( 'ERROR: You need to provide a user.' ) );
 
-		$response = wp_remote_get( $this->user_url(), apply_filters( 'twitterwp_get_tweets', $this->header_args( 'oauth' ) ) );
+		$args = apply_filters( 'twitterwp_get_user', $this->header_args( 'oauth' ) );
+		$response = wp_remote_get( $this->user_url(), $args );
 
 		if( is_wp_error( $response ) )
 		   return '<strong>ERROR:</strong> '. $response->get_error_message();
@@ -433,7 +434,16 @@ class TwitterWP {
 	 */
 	protected function tweets_url( $count = 1 ) {
 		$this->base_url = $this->api_url();
-		return $this->api_url( array( 'screen_name' => self::$user, 'count' => $count ) );
+
+		$params = apply_filters( 'twitterwp_tweets_url',
+			array(
+				 'screen_name' => self::$user,
+				 'count' => $count
+			),
+			$count,
+			self::$user
+		);
+		return $this->api_url( $params );
 	}
 
 	/**
@@ -444,7 +454,18 @@ class TwitterWP {
 	 */
 	protected function list_tweets_url( $list, $count = 1 ) {
 		$this->base_url = $this->api_url();
-		return $this->api_url( array( 'slug' => $list, 'owner_screen_name' => self::$user, 'count' => $count ), 'lists/statuses.json' );
+
+		$params = apply_filters( 'twitterwp_list_tweets_url',
+			array(
+				 'slug' => $list,
+				 'owner_screen_name' => self::$user,
+				 'count' => $count
+			),
+			$count,
+			self::$user,
+			$list
+		);
+		return $this->api_url( $params, 'lists/statuses.json' );
 	}
 
 	/**
@@ -454,7 +475,16 @@ class TwitterWP {
 	 */
 	protected function favorites_url( $count = 1 ) {
 		$this->base_url = $this->api_url();
-		return $this->api_url( array( 'screen_name' => self::$user, 'count' => $count ), 'favorites/list.json' );
+
+		$params = apply_filters( 'twitterwp_favorites_url',
+			array(
+				 'screen_name' => self::$user,
+				 'count' => $count
+			),
+			$count,
+			self::$user
+		);
+		return $this->api_url( $params, 'favorites/list.json' );
 	}
 
 	/**
@@ -478,13 +508,16 @@ class TwitterWP {
 			return false;
 		}
 
-		$search_params = apply_filters( 'twitterwp_search_params', array(
-			'q'           => $query,
-			'result_type' => self::$result_type,
-			'count'       => absint( $count ),
-		) );
-
-		return $this->api_url( $search_params, 'search/tweets.json' );
+		$params = apply_filters( 'twitterwp_search_url',
+			array(
+				'q'           => $query,
+				'result_type' => self::$result_type,
+				'count'       => absint( $count ),
+			),
+			$count,
+			$query
+		);
+		return $this->api_url( $params, 'search/tweets.json' );
 	}
 
 	/**
@@ -495,7 +528,14 @@ class TwitterWP {
 	 */
 	protected function user_url() {
 		$this->base_url = $this->api_url( false, 'users/lookup.json' );
-		return $this->api_url( array( 'screen_name' => self::$user ), 'users/lookup.json' );
+
+		$params = apply_filters( 'twitterwp_user_url',
+			array(
+				 'screen_name' => self::$user
+			),
+			self::$user
+		);
+		return $this->api_url( $params, 'users/lookup.json' );
 	}
 
 	/**
