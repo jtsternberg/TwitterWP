@@ -12,8 +12,8 @@ class TwitterWP {
 	protected $error_message     = 'Could not access Twitter feed.';
 	protected $url               = 'https://api.twitter.com/1.1/';
 	protected $base_url          = '';
-	public  static $user         = false;
-	public  static $result_type  = 'mixed';
+	public static $user          = false;
+	public static $result_type   = 'mixed';
 
 	private static $bearer_token = false;
 	// A single instance of this class.
@@ -51,7 +51,7 @@ class TwitterWP {
 	 *
 	 * @param array $app App credentials
 	 *
-	 * @return \TwitterWP true if app config seems good, wp_error if not
+	 * @return TwitterWP true if app config seems good, wp_error if not
 	 */
 	private function __construct( $app = array() ) {
 		if ( empty( self::$app ) ) {
@@ -359,15 +359,16 @@ class TwitterWP {
 
 		if ( is_wp_error( $token ) ) {
 			return $token;
-		} else {
-			/** @noinspection PhpToStringImplementationInspection */
-			return array(
-				'sslverify' => false,
-				'headers'   => array(
-					'Authorization' => 'Bearer ' . $token,
-				),
-			);
 		}
+
+		$header_args = array(
+			'sslverify' => false,
+			'headers'   => array(
+				'Authorization' => 'Bearer ' . $token,
+			),
+		);
+
+		return $header_args;
 	}
 
 	/**
@@ -377,7 +378,7 @@ class TwitterWP {
 	 *
 	 * @return array       Request arguments array
 	 */
-	protected function header_args_basic( ) {
+	protected function header_args_basic() {
 		return array(
 			'sslverify' => false,
 			'headers'   => array(
@@ -746,19 +747,18 @@ class TwitterWP {
 	 * @return string          wp_error messages
 	 */
 	public static function show_wp_error( $error, $echo = true ) {
-		if ( is_wp_error( $error ) ) {
-			$errors =
-				'<p class="error">' . implode( '<br/>', $error->get_error_messages( 'twitterwp_error' ) ) . '</p>';
-
-			if ( $echo ) {
-				echo $errors;
-			}
-
-			return $errors;
+		if ( !is_wp_error( $error ) ) {
+			return '';
 		}
 
-		return '';
+		$errors =
+			'<p class="error">' . implode( '<br/>', $error->get_error_messages( 'twitterwp_error' ) ) . '</p>';
 
+		if ( $echo ) {
+			echo $errors;
+		}
+
+		return $errors;
 	}
 
 }
