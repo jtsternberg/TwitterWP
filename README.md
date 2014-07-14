@@ -120,10 +120,10 @@ function twitterwp_example_test() {
 #### Changelog
 
 * 1.1.0
-	* added filters for every url: tweets_url(), list_tweets_url(), favorites_url(), user_url()
-	* added consistent filter for search_url()
-	* fixed get_user() filter for header args
-	* updated inline documentation
+	* added filters for every url: tweets_url(), list_tweets_url(), favorites_url(), user_url(). Props [@danstefancu](https://github.com/danstefancu), [#3](https://github.com/jtsternberg/TwitterWP/pull/3).
+	* added consistent filter for search_url(). Props [@danstefancu](https://github.com/danstefancu), [#3](https://github.com/jtsternberg/TwitterWP/pull/3).
+	* fixed get_user() filter for header args. Props [@danstefancu](https://github.com/danstefancu), [#3](https://github.com/jtsternberg/TwitterWP/pull/3).
+	* updated inline documentation. Props [@danstefancu](https://github.com/danstefancu), [#3](https://github.com/jtsternberg/TwitterWP/pull/3).
 
 * 1.0.3
 	* get_favorite_tweets() Get a number of a user's favorite tweets
