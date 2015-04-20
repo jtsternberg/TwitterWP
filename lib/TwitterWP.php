@@ -496,7 +496,7 @@ class TwitterWP {
 		$this->base_url = $this->url . $trail;
 
 		// append query args
-		return !empty( $params ) ? add_query_arg( $params, $this->base_url ) : $this->base_url;
+		return !empty( $params ) ? esc_url( add_query_arg( $params, $this->base_url ) ) : $this->base_url;
 	}
 
 	/**
