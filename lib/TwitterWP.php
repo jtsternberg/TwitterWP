@@ -4,7 +4,7 @@
  *
  * @author  Justin Sternberg <justin@dsgnwrks.pro>
  * @package TwitterWP
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 if ( ! class_exists( 'TwitterWP' ) ) :
@@ -497,7 +497,7 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 			$this->base_url = $this->url . $trail;
 
 			// append query args
-			return ! empty( $params ) ? esc_url( add_query_arg( $params, $this->base_url ) ) : $this->base_url;
+			return ! empty( $params ) ? esc_url_raw( add_query_arg( $params, $this->base_url ) ) : $this->base_url;
 		}
 
 		/**

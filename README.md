@@ -71,22 +71,20 @@ $TwitterWP = TwitterWP::start( $app );
 #### From example.php:
 ```php
 <?php
-
-if ( ! class_exists( 'TwitterWP' ) )
-	require_once( 'lib/TwitterWP.php' );
-
 /**
  * Example TwitterWP usage
  */
-add_action( 'all_admin_notices', 'twitterwp_example_test' );
 function twitterwp_example_test() {
+	
+	require_once( 'lib/TwitterWP.php' );
+
 	// app credentials
 	// (must be in this order)
 	$app = array(
-		'consumer_key'        => 'YOUR CONSUMER KEY',
-		'consumer_secret'     => 'YOUR CONSUMER SECRET',
-		'access_token'        => 'YOUR ACCESS TOKEN',
-		'access_token_secret' => 'YOUR ACCESS TOKEN SECRET',
+		'consumer_key'        => 'CONSUMER_KEY',
+		'consumer_secret'     => 'CONSUMER_SECRET',
+		'access_token'        => 'ACCESS_TOKEN',
+		'access_token_secret' => 'ACCESS_TOKEN_SECRET',
 	);
 	// initiate your app
 	$tw = TwitterWP::start( $app );
@@ -96,8 +94,9 @@ function twitterwp_example_test() {
 
 	$user = 'jtsternberg';
 	// bail here if the user doesn't exist
-	if ( ! $tw->user_exists( $user ) )
+	if ( ! $tw->user_exists( $user ) ) {
 		return;
+	}
 
 	echo '<div id="message" class="updated">';
 	echo '<pre>'. print_r( $tw->get_tweets( $user, 5 ), true ) .'</pre>';
@@ -107,17 +106,22 @@ function twitterwp_example_test() {
 	$rate_status = $tw->rate_limit_status();
 	echo '<div id="message" class="updated">';
 
-	if ( is_wp_error( $rate_status ) )
+	if ( is_wp_error( $rate_status ) ) {
 		$tw->show_wp_error( $rate_status );
-	else
+	} else {
 		echo '<pre>'. print_r( $rate_status, true ) .'</pre>';
+	}
 
 	echo '</div>';
 
 }
+add_action( 'all_admin_notices', 'twitterwp_example_test' );
 ```
 
 #### Changelog
+
+* 1.1.1
+	* Replace `esc_url` with `esc_url_raw` so query parameter values are not converted.
 
 * 1.1.0
 	* added filters for every url: tweets_url(), list_tweets_url(), favorites_url(), user_url(). Props [@danstefancu](https://github.com/danstefancu), [#3](https://github.com/jtsternberg/TwitterWP/pull/3).
