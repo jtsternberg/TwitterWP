@@ -4,7 +4,7 @@
  *
  * @author  Justin Sternberg <justin@dsgnwrks.pro>
  * @package TwitterWP
- * @version 1.1.1
+ * @version 1.1.2
  */
 
 if ( ! class_exists( 'TwitterWP' ) ) :
@@ -97,20 +97,25 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 *
 		 * @since  1.0.0
 		 *
-		 * @param  string $user Twitter username
-		 * @param  integer $count Number of tweets to return
+		 * @param  string $user    Twitter username
+		 * @param  integer $count  Number of tweets to return
+		 * @param  array   $args   Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 *
 		 * @return string|WP_Error Response or wp_error object
 		 */
-		public function get_tweets( $user = '', $count = 1 ) {
+		public function get_tweets( $user = '', $count = 1, $args = array() ) {
 			if ( $error = self::app_setup_error() ) {
 				return $error;
 			}
 
 			self::$user = $user ? $user : self::$user;
 
-			$args = apply_filters( 'twitterwp_get_tweets', $this->header_args( '', array( 'count' => $count ) ) );
-			$response = wp_remote_get( $this->tweets_url( $count ), $args );
+			$args = wp_parse_args( $args, array(
+				'count' => $count,
+			) );
+
+			$args = apply_filters( 'twitterwp_get_tweets', $this->header_args( '', $args ) );
+			$response = wp_remote_get( $this->tweets_url( $count, $args ), $args );
 
 			if ( is_wp_error( $response ) ) {
 				return '<strong>ERROR:</strong> ' . $response->get_error_message();
@@ -126,16 +131,21 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 *
 		 * @param  string|array $search Search query, can be string or array
 		 * @param  integer $count Number of tweets to return
+		 * @param  array   $args   Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 *
 		 * @return string|WP_Error    Response or wp_error object
 		 */
-		public function get_search_results( $search, $count = 100 ) {
+		public function get_search_results( $search, $count = 100, $args = array() ) {
 			if ( $error = self::app_setup_error() ) {
 				return $error;
 			}
 
-			$args = apply_filters( 'twitterwp_get_search_results', $this->header_args( '', array( 'count' => $count ) ) );
-			$response = wp_remote_get( $this->search_url( $search, $count ), $args );
+			$args = wp_parse_args( $args, array(
+				'count' => $count,
+			) );
+
+			$args = apply_filters( 'twitterwp_get_search_results', $this->header_args( '', $args ) );
+			$response = wp_remote_get( $this->search_url( $search, $count, $args ), $args );
 
 			if ( is_wp_error( $response ) ) {
 				return '<strong>ERROR:</strong> ' . $response->get_error_message();
@@ -152,18 +162,23 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 * @param  string $user Twitter username
 		 * @param  string $list Search query, can be string or array
 		 * @param  integer $count Number of tweets to return
+		 * @param  array   $args   Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 *
 		 * @return string|WP_Error Response or wp_error object
 		 */
-		public function get_list_tweets( $user, $list, $count = 100 ) {
+		public function get_list_tweets( $user, $list, $count = 100, $args = array() ) {
 			if ( $error = self::app_setup_error() ) {
 				return $error;
 			}
 
 			self::$user = $user ? $user : self::$user;
 
-			$args = apply_filters( 'twitterwp_get_list_tweets', $this->header_args( '', array( 'count' => $count ) ) );
-			$response = wp_remote_get( $this->list_tweets_url( $list, $count ), $args );
+			$args = wp_parse_args( $args, array(
+				'count' => $count,
+			) );
+
+			$args = apply_filters( 'twitterwp_get_list_tweets', $this->header_args( '', $args ) );
+			$response = wp_remote_get( $this->list_tweets_url( $list, $count, $args ), $args );
 
 			if ( is_wp_error( $response ) ) {
 				return '<strong>ERROR:</strong> ' . $response->get_error_message();
@@ -179,18 +194,23 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 *
 		 * @param  string $user Twitter username
 		 * @param  integer $count Number of tweets to return
+		 * @param  array   $args   Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 *
 		 * @return string|WP_Error Response or wp_error object
 		 */
-		public function get_favorite_tweets( $user = '', $count = 1 ) {
+		public function get_favorite_tweets( $user = '', $count = 1, $args = array() ) {
 			if ( $error = self::app_setup_error() ) {
 				return $error;
 			}
 
 			self::$user = $user ? $user : self::$user;
 
-			$args = apply_filters( 'twitterwp_get_favorite_tweets', $this->header_args( '', array( 'count' => $count ) ) );
-			$response = wp_remote_get( $this->favorites_url( $count ), $args );
+			$args = wp_parse_args( $args, array(
+				'count' => $count,
+			) );
+
+			$args = apply_filters( 'twitterwp_get_favorite_tweets', $this->header_args( '', $args ) );
+			$response = wp_remote_get( $this->favorites_url( $count, $args ), $args );
 
 			if ( is_wp_error( $response ) ) {
 				return '<strong>ERROR:</strong> ' . $response->get_error_message();
@@ -521,20 +541,19 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 * @since  1.0.0
 		 *
 		 * @param  integer $count Number of tweets to return
+		 * @param  array   $args  Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 *
 		 * @return string         Endpoint url for request
 		 */
-		protected function tweets_url( $count = 1 ) {
+		protected function tweets_url( $count = 1, $args = array() ) {
 			$this->base_url = $this->api_url();
 
-			$params = apply_filters( 'twitterwp_tweets_url',
-				array(
-					 'screen_name' => self::$user,
-					 'count'       => $count,
-				),
-				$count,
-				self::$user
-			);
+			$args = wp_parse_args( $args, array(
+				'screen_name' => self::$user,
+				'count'       => $count,
+			) );
+
+			$params = apply_filters( 'twitterwp_tweets_url', $args, $count, self::$user, $args );
 
 			return $this->api_url( $params );
 		}
@@ -546,22 +565,20 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 *
 		 * @param string $list
 		 * @param  integer $count Number of tweets to return
+		 * @param  array   $args  Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 *
 		 * @return string         Endpoint url for request
 		 */
-		protected function list_tweets_url( $list, $count = 1 ) {
+		protected function list_tweets_url( $list, $count = 1, $args = array() ) {
 			$this->base_url = $this->api_url();
 
-			$params = apply_filters( 'twitterwp_list_tweets_url',
-				array(
-					 'slug'              => $list,
-					 'owner_screen_name' => self::$user,
-					 'count'             => $count,
-				),
-				$count,
-				self::$user,
-				$list
-			);
+			$args = wp_parse_args( $args, array(
+				'slug'              => $list,
+				'owner_screen_name' => self::$user,
+				'count'             => $count,
+			) );
+
+			$params = apply_filters( 'twitterwp_list_tweets_url', $args, $count, self::$user, $list );
 
 			return $this->api_url( $params, 'lists/statuses.json' );
 		}
@@ -572,20 +589,18 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 * @since  1.0.3
 		 *
 		 * @param  integer $count Number of tweets to return
-		 *
+		 * @param  array   $args  Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 * @return string
 		 */
-		protected function favorites_url( $count = 1 ) {
+		protected function favorites_url( $count = 1, $args = array() ) {
 			$this->base_url = $this->api_url();
 
-			$params = apply_filters( 'twitterwp_favorites_url',
-				array(
-					 'screen_name' => self::$user,
-					 'count'       => $count,
-				),
-				$count,
-				self::$user
-			);
+			$args = wp_parse_args( $args, array(
+				'screen_name' => self::$user,
+				'count'       => $count,
+			) );
+
+			$params = apply_filters( 'twitterwp_favorites_url', $args, $count, self::$user );
 
 			return $this->api_url( $params, 'favorites/list.json' );
 		}
@@ -597,10 +612,11 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 *
 		 * @param  string|array $search Search query, can be string or array
 		 * @param  integer $count Number of tweets to return
+		 * @param  array   $args  Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 *
 		 * @return string               Endpoint url for request
 		 */
-		protected function search_url( $search, $count = 100 ) {
+		protected function search_url( $search, $count = 100, $args = array() ) {
 			$this->base_url = $this->api_url();
 			$tags_array = array();
 			if ( is_array( $search ) ) {
@@ -614,15 +630,13 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 				return false;
 			}
 
-			$params = apply_filters( 'twitterwp_search_url',
-				array(
-					 'q'           => $query,
-					 'result_type' => self::$result_type,
-					 'count'       => absint( $count ),
-				),
-				$count,
-				$query
-			);
+			$args = wp_parse_args( $args, array(
+				'q'           => $query,
+				'result_type' => self::$result_type,
+				'count'       => absint( $count ),
+			) );
+
+			$params = apply_filters( 'twitterwp_search_url', $args, $count, $query );
 
 			return $this->api_url( $params, 'search/tweets.json' );
 		}
@@ -631,21 +645,22 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 		 * Request url for retrieving a user's profile
 		 *
 		 * @since  1.0.0
+		 * @param  array   $args  Additional parameters, like max_id: https://dev.twitter.com/rest/public/timelines
 		 *
 		 * @return string         Endpoint url for request
 		 */
-		protected function user_url() {
+		protected function user_url( $args = array() ) {
 			$this->base_url = $this->api_url();
 
-			$params = apply_filters( 'twitterwp_user_url',
-				array(
-					 'screen_name' => self::$user,
-				),
-				self::$user
-			);
+			$args = wp_parse_args( $args, array(
+				'screen_name' => self::$user,
+			) );
+
+			$params = apply_filters( 'twitterwp_user_url', $args, self::$user );
 
 			return $this->api_url( $params, 'users/lookup.json' );
 		}
+
 
 		/**
 		 * Parse's a http response for errors

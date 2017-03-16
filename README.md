@@ -120,6 +120,9 @@ add_action( 'all_admin_notices', 'twitterwp_example_test' );
 
 #### Changelog
 
+* 1.1.2
+	* Allow additional args to be passed to Twitter API through methods (e.g. `max_id`: https://dev.twitter.com/rest/public/timelines).
+
 * 1.1.1
 	* Replace `esc_url` with `esc_url_raw` so query parameter values are not converted.
 
