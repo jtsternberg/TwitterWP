@@ -382,12 +382,12 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 				return $token;
 			}
 
-			$header_args = array(
+			$header_args = wp_parse_args( $header_args, array(
 				'sslverify' => false,
 				'headers'   => array(
 					'Authorization' => 'Bearer ' . $token,
 				),
-			);
+			) );
 
 			return $header_args;
 		}
