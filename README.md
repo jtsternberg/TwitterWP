@@ -122,6 +122,7 @@ add_action( 'all_admin_notices', 'twitterwp_example_test' );
 
 * 1.1.3
 
+	* Preserve args on non-authenticated calls. Props [oddevan](https://github.com/oddevan), [#6](https://github.com/jtsternberg/TwitterWP/pull/6).
 	* Added tweet_mode=>extended by default in order to get full text of tweet.
 		- See: https://developer.twitter.com/en/docs/tweets/tweet-updates.html
 		- And: https://www.drupal.org/project/tweet_feed/issues/2861466
