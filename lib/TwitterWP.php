@@ -551,6 +551,7 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 			$args = wp_parse_args( $args, array(
 				'screen_name' => self::$user,
 				'count'       => $count,
+				'tweet_mode'  => 'extended',
 			) );
 
 			$params = apply_filters( 'twitterwp_tweets_url', $args, $count, self::$user, $args );
@@ -576,6 +577,7 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 				'slug'              => $list,
 				'owner_screen_name' => self::$user,
 				'count'             => $count,
+				'tweet_mode'        => 'extended',
 			) );
 
 			$params = apply_filters( 'twitterwp_list_tweets_url', $args, $count, self::$user, $list );
@@ -598,6 +600,7 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 			$args = wp_parse_args( $args, array(
 				'screen_name' => self::$user,
 				'count'       => $count,
+				'tweet_mode'  => 'extended',
 			) );
 
 			$params = apply_filters( 'twitterwp_favorites_url', $args, $count, self::$user );
@@ -634,6 +637,7 @@ if ( ! class_exists( 'TwitterWP' ) ) :
 				'q'           => $query,
 				'result_type' => self::$result_type,
 				'count'       => absint( $count ),
+				'tweet_mode'  => 'extended',
 			) );
 
 			$params = apply_filters( 'twitterwp_search_url', $args, $count, $query );
