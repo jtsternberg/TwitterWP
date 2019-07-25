@@ -75,7 +75,7 @@ $TwitterWP = TwitterWP::start( $app );
  * Example TwitterWP usage
  */
 function twitterwp_example_test() {
-	
+
 	require_once( 'lib/TwitterWP.php' );
 
 	// app credentials
@@ -119,6 +119,12 @@ add_action( 'all_admin_notices', 'twitterwp_example_test' );
 ```
 
 #### Changelog
+
+* 1.1.3
+
+	* Added tweet_mode=>extended by default in order to get full text of tweet.
+		- See: https://developer.twitter.com/en/docs/tweets/tweet-updates.html
+		- And: https://www.drupal.org/project/tweet_feed/issues/2861466
 
 * 1.1.2
 	* Allow additional args to be passed to Twitter API through methods (e.g. `max_id`: https://dev.twitter.com/rest/public/timelines).
